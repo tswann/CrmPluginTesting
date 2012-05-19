@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Xrm.Sdk;
+using ExtensionMethods;
 
 namespace CrmPluginTesting
 {
@@ -33,11 +34,18 @@ namespace CrmPluginTesting
 
         #region Methods
         /// <summary>
-        /// Pre-Validation method will default the value of our custom 'Type' field
+        /// Pre-Validation method will default the values of contact preference fields
         /// </summary>
         private static void PreValidateContactCreate(IPluginExecutionContext context, IOrganizationService service)
         {
             Entity contactEntity = (Entity)context.InputParameters["Target"];
+            OptionSetValue doNotAllow = new OptionSetValue(1);
+
+            contactEntity.SetAttribute("donotemail", doNotAllow);
+            contactEntity.SetAttribute("donotphone", doNotAllow);
+            contactEntity.SetAttribute("donotpostalmail", doNotAllow);
+            contactEntity.SetAttribute("donotbulkemail", doNotAllow);
+            contactEntity.SetAttribute("donotfax", doNotAllow);
         }
 
         /// <summary>

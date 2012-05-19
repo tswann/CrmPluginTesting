@@ -6,7 +6,7 @@ namespace ContactPlugins.Test
     public class PreValidateContactCreateFacts
     {
         [Fact]
-        public void ContactDefaultTypeSet()
+        public void DefaultContactPreferencesSet()
         {
             
         }
