@@ -32,11 +32,17 @@ namespace CrmPluginTesting
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Pre-Validation method will default the value of our custom 'Type' field
+        /// </summary>
         private static void PreValidateContactCreate(IPluginExecutionContext context, IOrganizationService service)
         {
-
+            Entity contactEntity = (Entity)context.InputParameters["Target"];
         }
 
+        /// <summary>
+        /// Post Create method will share the Contact with a user specified in the custom 'ShareWithUser' field
+        /// </summary>
         private static void PostContactCreate(IPluginExecutionContext context, IOrganizationService service)
         {
 
