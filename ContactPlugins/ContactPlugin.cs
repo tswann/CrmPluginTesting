@@ -7,6 +7,7 @@ namespace CrmPluginTesting
     {
         private const int _preValidatePluginStage = 10;
         private const int _postOperationPluginStage = 40;
+        private const string _createMessage = "Create";
 
         #region IPlugin Members
 
@@ -15,14 +16,16 @@ namespace CrmPluginTesting
             IPluginExecutionContext context = (IPluginExecutionContext)serviceProvider.GetService(typeof(IPluginExecutionContext));
             IOrganizationServiceFactory factory = (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
             IOrganizationService service = factory.CreateOrganizationService(context.UserId);
-
-            if (context.Stage == _preValidatePluginStage)
+            if (context.MessageName == _createMessage)
             {
-                PreValidateContactCreate(context, service);
-            }
-            else if (context.Stage == _postOperationPluginStage)
-            {
-                PostContactCreate(context, service);
+                if (context.Stage == _preValidatePluginStage)
+                {
+                    PreValidateContactCreate(context, service);
+                }
+                else if (context.Stage == _postOperationPluginStage)
+                {
+                    PostContactCreate(context, service);
+                }
             }
         }
 
