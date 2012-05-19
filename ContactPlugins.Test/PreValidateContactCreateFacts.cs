@@ -10,13 +10,15 @@ namespace ContactPlugins.Test
 {
     public class PreValidateContactCreateFacts
     {
+        #region Fields
         private SIServiceProvider _serviceProvider;
         private SIPluginExecutionContext _pluginExecutionContext;
         private SIOrganizationServiceFactory _orgServiceFactory;
         private SIOrganizationService _orgService;
+        #endregion
 
         /// <summary>
-        /// Constructor performs test setup of CRM service stubs
+        /// Constructor arranges stubs for CRM services (performs function of Setup in NUnit)
         /// </summary>
         public PreValidateContactCreateFacts()
         {
@@ -36,11 +38,15 @@ namespace ContactPlugins.Test
             };
 
             _orgServiceFactory.CreateOrganizationServiceNullableOfGuid = delegate(Guid? userid) { return _orgService; };
-
             _pluginExecutionContext.UserIdGet = () => { return new Guid(); };
         }
+
         #region Tests
 
+        /// <summary>
+        /// Execute pre-validation create Contact plugin and asset that default contact
+        /// preferences have been set.
+        /// </summary>
         [Fact]
         public void DefaultContactPreferencesSet()
         {
@@ -53,6 +59,7 @@ namespace ContactPlugins.Test
             _pluginExecutionContext.StageGet = () => { return 10; };
             plugin.Execute(_serviceProvider);
 
+            // Assert the default contact preferences have been set
             OptionSetValue doNotAllow = new OptionSetValue(1);
             contact.Attributes["donotemail"].Should().Equal(doNotAllow);
             contact.Attributes["donotphone"].Should().Equal(doNotAllow);
