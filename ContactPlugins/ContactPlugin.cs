@@ -1,6 +1,10 @@
 ﻿using System;
-using Microsoft.Xrm.Sdk;
+using System.Collections.Generic;
+using System.Linq;
 using ExtensionMethods;
+using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Messages;
+using Microsoft.Xrm.Sdk.Query;
 
 namespace CrmPluginTesting
 {
@@ -42,10 +46,27 @@ namespace CrmPluginTesting
             OptionSetValue doNotAllow = new OptionSetValue(1);
 
             contactEntity.SetAttribute("donotemail", doNotAllow);
-            contactEntity.SetAttribute("donotphone", doNotAllow);
             contactEntity.SetAttribute("donotpostalmail", doNotAllow);
             contactEntity.SetAttribute("donotbulkemail", doNotAllow);
             contactEntity.SetAttribute("donotfax", doNotAllow);
+
+            // Get a count of child phone call entities associated with this Contact
+            QueryExpression query = new QueryExpression();
+            query.EntityName = "phonecall";
+            query.ColumnSet = new ColumnSet(allColumns: true);
+            query.Criteria = new FilterExpression();
+            query.Criteria.AddCondition(new ConditionExpression("regardingobjectid", ConditionOperator.Equal, context.PrimaryEntityId));
+
+            RetrieveMultipleRequest request = new RetrieveMultipleRequest();
+            request.Query = query;
+            IEnumerable<Entity> results = ((RetrieveMultipleResponse)service.Execute(request)).EntityCollection.Entities;
+            if (results.Any())
+            {
+                // Do not default contact preference for phone if there are already some associated phone calls
+                // Why? Because! Testing!
+                contactEntity.SetAttribute("donotphone", doNotAllow);
+            }
+                
         }
 
         /// <summary>
