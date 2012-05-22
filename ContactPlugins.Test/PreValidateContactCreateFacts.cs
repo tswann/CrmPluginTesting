@@ -50,16 +50,19 @@ namespace ContactPlugins.Test
         [Fact]
         public void DefaultContactPreferencesSet()
         {
+            // Arrange
             ContactPlugin plugin = new ContactPlugin();
             Entity contact = new Entity("contact");
             ParameterCollection parameterCollection = new ParameterCollection();
             parameterCollection.Add("Target", contact);
             _pluginExecutionContext.InputParametersGet = () => { return parameterCollection; };
-            _pluginExecutionContext.MessageNameGet = () => { return "Create"; };
-            _pluginExecutionContext.StageGet = () => { return 10; };
+            _pluginExecutionContext.MessageNameGet = () => { return "Create"; }; // Fake a 'Create' message
+            _pluginExecutionContext.StageGet = () => { return 10; }; // Fake the 'Pre-Validation' execution stage
+
+            // Act
             plugin.Execute(_serviceProvider);
 
-            // Assert the default contact preferences have been set
+            // Assert that default contact preferences have been set
             OptionSetValue doNotAllow = new OptionSetValue(1);
             contact.Attributes["donotemail"].Should().Equal(doNotAllow);
             contact.Attributes["donotphone"].Should().Equal(doNotAllow);
